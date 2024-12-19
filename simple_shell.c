@@ -5,19 +5,18 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-void execute_command(char *line);
-void handle_fork(char *line);
-
 /**
- * main - Main loop of the simple shell
+ * main - Boucle principale du shell simple
  *
- * Return: Always 0.
+ * Return: Toujours 0.
  */
 int main(void)
 {
 char *line = NULL;
 size_t len = 0;
 ssize_t nread;
+pid_t child_pid;
+int status;
 
 while (1)
 {
@@ -35,33 +34,22 @@ line[strcspn(line, "\n")] = '\0';
 if (strlen(line) == 0)
 continue;
 
-handle_fork(line);
-}
-
-free(line);
-return (0);
-}
-
-/**
- * handle_fork - Handles the forking process
- * @line: The command line input
- */
-void handle_fork(char *line)
-{
-pid_t child_pid;
-int status;
-
 child_pid = fork();
 
 if (child_pid == -1)
 {
 perror("Erreur avec fork");
-return;
+continue;
 }
 
 if (child_pid == 0)
 {
-execute_command(line);
+char *argv[] = {line, NULL};
+if (execve(line, argv, NULL) == -1)
+{
+perror("./shell");
+exit(EXIT_FAILURE);
+}
 }
 else
 {
@@ -69,18 +57,6 @@ wait(&status);
 }
 }
 
-/**
- * execute_command - Executes a command
- * @line: The command line input
- */
-void execute_command(char *line)
-{
-char *argv[] = {line, NULL};
-
-if (execve(line, argv, NULL) == -1)
-{
-perror("./shell");
-exit(EXIT_FAILURE);
+free(line);
+return (0);
 }
-}
-
