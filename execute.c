@@ -2,25 +2,22 @@
 
 /**
  * execute_command - Exécute une commande
- * @command: Commande à exécuter
+ * @tokens: Tableau de tokens
  * @argv: Tableau des arguments
  *
  * Return: 0 en cas de succès, -1 sinon.
  */
-int execute_command(char *command, char **argv)
+int execute_command(char **tokens, char **argv)
 {
     pid_t pid;
     int status;
     char *cmd_path;
-    char *cmd[] = {NULL, NULL};
 
-    cmd_path = find_command_in_path(command); /* Recherche dans le PATH */
+    cmd_path = find_in_path(tokens[0]);
     if (!cmd_path)
-        return (-1); /* Commande non trouvée */
+        return (-1);
 
-    cmd[0] = cmd_path; /* Construire l'argument pour execve */
-
-    pid = fork(); /* Créer un processus enfant */
+    pid = fork();
     if (pid == -1)
     {
         perror("fork");
@@ -28,15 +25,15 @@ int execute_command(char *command, char **argv)
         return (-1);
     }
 
-    if (pid == 0) /* Enfant */
+    if (pid == 0) /* Processus enfant */
     {
-        execve(cmd_path, cmd, environ); /* Exécuter la commande */
-        perror(argv[0]); /* En cas d'échec */
+        execve(cmd_path, tokens, environ);
+        perror(argv[0]);
         free(cmd_path);
         exit(EXIT_FAILURE);
     }
-    else /* Parent */
-        waitpid(pid, &status, 0); /* Attendre la fin de l'enfant */
+    else /* Processus parent */
+        wait(&status);
 
     free(cmd_path);
     return (0);

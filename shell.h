@@ -12,7 +12,9 @@
 extern char **environ;
 
 /* Prototypes */
-int execute_command(char *command, char **argv);
-char *find_command_in_path(char *command);
+int execute_command(char **tokens, char **argv);
+char *find_in_path(char *command);
+char **tokenize_command(char *command);
+void free_tokens(char **tokens);
 
 #endif /* SHELL_H */
