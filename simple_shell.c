@@ -1,62 +1,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+#include <stddef.h>
 
-int main()
+extern char **environ;
+
+int main(void)
 {
-char *line = NULL;
-size_t len = 0;
-pid_t pid;
-int status;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t nread;
+    char *local_argv[2]; /* Déclaration déplacée ici, au début du bloc */
 
-while (1)
-{
-printf("simple-shell> ");
-ssize_t nread = getline(&line, &len, stdin);
+    while (1)
+    {
+        printf("$ ");
+        nread = getline(&line, &len, stdin);
+        if (nread == -1)
+        {
+            free(line);
+            return (0);
+        }
 
-if (nread == -1)
-{
-printf("\nExiting shell.\n");
-break;
+        local_argv[0] = line;
+        local_argv[1] = NULL;
+
+        if (execve(line, local_argv, environ) == -1)
+        {
+            perror("execve");
+        }
+    }
+
+    free(line);
+    return (0);
 }
-
-
-line[strcspn(line, "\n")] = '\0';
-
-
-pid = fork();
-if (pid < 0)
-{
-perror("fork failed");
-exit(EXIT_FAILURE);
-}
-else if (pid == 0)
-{
-
-char *const argv[] = {line, NULL};
-if (execve(line, argv, NULL) == -1) {
-perror("execve failed");
-exit(EXIT_FAILURE);
-}
-}
-else
-{
-
-waitpid(pid, &status, 0);
-if (WIFEXITED(status)) {
-printf("Child exited with status %d\n", WEXITSTATUS(status));
-}
-else
-{
-printf("Child terminated abnormally.\n");
-}
-}
-}
-
-free(line);
-return (0);
-}
-

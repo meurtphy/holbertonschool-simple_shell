@@ -19,4 +19,4 @@ void free_tokens(char **tokens);
 int is_builtin(char **tokens, char **env);
 int _strcmp(char *s1, char *s2);
 
-#endif /* SHELL_H */
+#endif
