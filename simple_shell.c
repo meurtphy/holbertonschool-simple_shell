@@ -26,7 +26,14 @@ free(line);
 return (NULL);
 }
 
+
 line[strcspn(line, "\n")] = '\0';
+if (strlen(line) == 0 || line[0] == '\033')
+{
+free(line);
+return (NULL);
+}
+
 return (line);
 }
 
@@ -51,7 +58,7 @@ if (child_pid == 0)
 char *argv[] = {line, NULL};
 if (execve(line, argv, environ) == -1)
 {
-perror("./shell");
+fprintf(stderr, "./shell: %s: \n", line);
 exit(EXIT_FAILURE);
 }
 }
