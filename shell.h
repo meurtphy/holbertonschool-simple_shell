@@ -13,7 +13,7 @@ extern char **environ;
 
 /* Prototypes */
 int execute_command(char **tokens, char **argv);
-char *find_in_path(char *command);
+char *find_in_path(const char *command);
 char **tokenize_command(char *command);
 void free_tokens(char **tokens);
 int is_builtin(char **tokens, char **env);
