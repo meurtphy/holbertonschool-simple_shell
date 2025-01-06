@@ -1,19 +1,12 @@
 #include "shell.h"
 
-/**
- * main - Boucle principale du shell.
- * @argc: Nombre d'arguments.
- * @argv: Tableau des arguments.
- *
- * Return: 0 en cas de succès.
- */
 int main(int argc, char **argv)
 {
-    char *command = NULL;
-    size_t len = 0;
+    char *command = NULL; /* Pointeur pour la commande */
+    size_t len = 0;       /* Taille du buffer */
     ssize_t nread;
 
-    (void)argc; /* Supprime les warnings si argc n'est pas utilisé */
+    (void)argc; /* Supprime les avertissements pour argc inutilisé */
 
     while (1)
     {
@@ -21,15 +14,15 @@ int main(int argc, char **argv)
             printf("$ ");
 
         nread = getline(&command, &len, stdin); /* Lire la commande */
-        if (nread == -1) /* EOF (Ctrl+D) */
+        if (nread == -1) /* Gestion de EOF (Ctrl+D) */
         {
-            free(command);
             if (isatty(STDIN_FILENO))
                 printf("\n");
+            free(command); /* Libérer la mémoire ici une seule fois */
             break;
         }
 
-        command[strcspn(command, "\n")] = '\0'; /* Supprime le \n */
+        command[strcspn(command, "\n")] = '\0'; /* Supprime le retour à la ligne */
         if (strlen(command) == 0) /* Commande vide */
             continue;
 
@@ -37,6 +30,5 @@ int main(int argc, char **argv)
             fprintf(stderr, "%s: 1: %s: not found\n", argv[0], command);
     }
 
-    free(command);
     return 0;
 }
