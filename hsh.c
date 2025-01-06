@@ -13,9 +13,12 @@ char *command;
 
 (void)argc;
 (void)argv;
+
 while (1)
 {
+if (isatty(STDIN_FILENO))
 display_prompt();
+
 command = read_command();
 
 if (!command)
@@ -32,7 +35,6 @@ execute_command(command);
 
 free(command);
 }
-
 return (0);
 }
 

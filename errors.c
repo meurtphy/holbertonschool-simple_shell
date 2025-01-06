@@ -7,5 +7,6 @@
  */
 void print_error(char *program, char *command)
 {
-dprintf(STDERR_FILENO, "%s: %s: No such file or directory\n", program, command);
+fprintf(stderr, "%s: %s: No such file or directory\n", program, command);
 }
+

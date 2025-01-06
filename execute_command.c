@@ -28,7 +28,7 @@ wait(&status);
 }
 else
 {
-perror("Erreur avec fork");
+perror("fork");
 }
 }
 
