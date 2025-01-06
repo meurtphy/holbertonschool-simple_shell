@@ -6,16 +6,13 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <errno.h>
 
-
-extern char **environ;
-
-
+/* Prototypes */
 void display_prompt(void);
 char *read_command(void);
-void execute_command(char *command);
-void print_error(char *program, char *command);
+int execute_command(char *command);
 
 #endif

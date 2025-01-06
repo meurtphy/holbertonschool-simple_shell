@@ -1,28 +1,62 @@
-#include "shell.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
-/**
- * main - Point d'entrée du shell.
- *
- * Return: Toujours 0.
- */
-int main(void)
+int main()
 {
-char *command;
+char *line = NULL;
+size_t len = 0;
+pid_t pid;
+int status;
 
 while (1)
 {
-display_prompt();
-command = read_command();
-if (!command)
+printf("simple-shell> ");
+ssize_t nread = getline(&line, &len, stdin);
+
+if (nread == -1)
 {
-printf("\n");
+printf("\nExiting shell.\n");
 break;
 }
 
-execute_command(command);
-free(command);
+
+line[strcspn(line, "\n")] = '\0';
+
+
+pid = fork();
+if (pid < 0)
+{
+perror("fork failed");
+exit(EXIT_FAILURE);
+}
+else if (pid == 0)
+{
+
+char *const argv[] = {line, NULL};
+if (execve(line, argv, NULL) == -1) {
+perror("execve failed");
+exit(EXIT_FAILURE);
+}
+}
+else
+{
+
+waitpid(pid, &status, 0);
+if (WIFEXITED(status)) {
+printf("Child exited with status %d\n", WEXITSTATUS(status));
+}
+else
+{
+printf("Child terminated abnormally.\n");
+}
+}
 }
 
+free(line);
 return (0);
 }
 
