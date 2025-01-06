@@ -16,5 +16,6 @@ int execute_command(char **tokens, char **argv);
 char *find_in_path(char *command);
 char **tokenize_command(char *command);
 void free_tokens(char **tokens);
+int _strcmp(char *s1, char *s2);
 
 #endif /* SHELL_H */

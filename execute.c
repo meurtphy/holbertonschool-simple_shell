@@ -13,9 +13,9 @@ int execute_command(char **tokens, char **argv)
     int status;
     char *cmd_path;
 
-    cmd_path = find_in_path(tokens[0]); /* Recherche la commande */
+    cmd_path = find_in_path(tokens[0]); /* Recherche la commande dans PATH */
     if (!cmd_path)
-        return (-1);
+        return (-1); /* Commande introuvable */
 
     pid = fork(); /* Crée un processus enfant */
     if (pid == -1)
