@@ -5,3 +5,11 @@ fork_wait_execve.c
 print_args.c
 read_line.c
 hsh
+_which.c
+getppid.c
+fork_example.c
+execve_example.c
+fork_return_value.c
+fork_wait_execve.c
+print_args.c
+read_line.c
