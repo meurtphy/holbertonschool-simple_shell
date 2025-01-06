@@ -6,32 +6,29 @@
  */
 void execute_command(char *command)
 {
-pid_t child_pid;
+pid_t pid;
 int status;
+char *argv[2];
 
-if (!command || strlen(command) == 0) /* Si la commande est vide */
-return;
+argv[0] = command;
+argv[1] = NULL;
 
-child_pid = fork();
-if (child_pid == -1)
+pid = fork();
+if (pid == 0)
 {
-perror("Erreur avec fork");
-return;
-}
-
-if (child_pid == 0)
-{
-char *argv[] = {command, NULL};
 if (execve(command, argv, environ) == -1)
 {
-fprintf(stderr, "./shell: %s: No such file or directory\n", command);
+print_error("./hsh", command);
 exit(EXIT_FAILURE);
 }
 }
-else
+else if (pid > 0)
 {
 wait(&status);
 }
+else
+{
+perror("Erreur avec fork");
 }
-
+}
 

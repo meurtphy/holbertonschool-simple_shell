@@ -5,6 +5,11 @@
  */
 void display_prompt(void)
 {
-    printf("#cisfun$ ");
-    fflush(stdout); /* S'assurer que le prompt est affiché immédiatement */
+if (isatty(STDIN_FILENO))
+{
+
+write(STDOUT_FILENO, "($) ", 4);
+
 }
+}
+

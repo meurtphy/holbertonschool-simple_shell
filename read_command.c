@@ -3,7 +3,7 @@
 /**
  * read_command - Lit une commande entrée par l'utilisateur.
  *
- * Return: La commande saisie ou NULL si EOF.
+ * Return: La commande saisie, ou NULL en cas d'erreur ou EOF.
  */
 char *read_command(void)
 {
@@ -12,14 +12,15 @@ size_t len = 0;
 ssize_t nread;
 
 nread = getline(&line, &len, stdin);
-if (nread == -1) /* Gère EOF ou erreur */
+if (nread == -1)
 {
 free(line);
-return NULL;
+return (NULL);
 }
 
 line[strcspn(line, "\n")] = '\0';
 return (line);
 }
+
 
 
