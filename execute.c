@@ -12,15 +12,17 @@ int execute_command(char *command)
 {
     pid_t pid;
     int status;
-    char *argv[2]; /* Tableau pour stocker la commande */
-    struct stat st; /* Déclaration déplacée ici */
+    char *argv[2];
+    struct stat st;
 
-    argv[0] = command; /* Initialise le tableau */
+    argv[0] = command;
     argv[1] = NULL;
 
-    /* Vérifie si le fichier est accessible */
-    if (stat(command, &st) != 0)
+    if (stat(command, &st) != 0) /* Vérifie si le fichier existe */
+    {
+        fprintf(stderr, "./shell: %s: No such file or directory\n", command);
         return -1;
+    }
 
     pid = fork();
     if (pid == -1) /* Gestion d'erreur de fork */
@@ -31,7 +33,7 @@ int execute_command(char *command)
 
     if (pid == 0) /* Processus enfant */
     {
-        if (execve(command, argv, environ) == -1) /* Exécute la commande */
+        if (execve(command, argv, environ) == -1)
         {
             perror(command);
             exit(EXIT_FAILURE);
@@ -39,7 +41,7 @@ int execute_command(char *command)
     }
     else /* Processus parent */
     {
-        waitpid(pid, &status, 0); /* Attend la fin du processus enfant */
+        waitpid(pid, &status, 0); /* Attend que l'enfant termine */
     }
 
     return 0;
