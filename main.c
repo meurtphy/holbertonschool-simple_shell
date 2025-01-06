@@ -5,11 +5,11 @@
  * @argc: Nombre d'arguments
  * @argv: Tableau des arguments
  *
- * Return: 0 en cas de succès, ou 1 sinon.
+ * Return: 0 en cas de succès, 1 sinon.
  */
 int main(int argc, char **argv)
 {
-    char *command = NULL, **tokens = NULL;
+    char *line = NULL, **tokens;
     size_t len = 0;
     ssize_t nread;
 
@@ -17,27 +17,28 @@ int main(int argc, char **argv)
 
     while (1)
     {
-        if (isatty(STDIN_FILENO))
-            printf("$ ");
+        if (isatty(STDIN_FILENO)) /* Mode interactif */
+            write(STDOUT_FILENO, "$ ", 2);
 
-        nread = getline(&command, &len, stdin);
+        nread = getline(&line, &len, stdin);
         if (nread == -1) /* EOF ou erreur */
             break;
 
-        command[strcspn(command, "\n")] = '\0'; /* Retirer '\n' */
-        tokens = tokenize_command(command); /* Découper la commande */
-        if (tokens && tokens[0])
-        {
-            if (strcmp(tokens[0], "exit") == 0)
-                break; /* Quitter si la commande est "exit" */
+        line[nread - 1] = '\0'; /* Supprimer le '\n' */
+        tokens = tokenize_command(line);
 
-            if (execute_command(tokens, argv) == -1)
-                fprintf(stderr, "%s: Command not found: %s\n", argv[0], tokens[0]);
+        if (tokens && tokens[0]) /* Exécuter si la commande n'est pas vide */
+        {
+            if (strcmp(tokens[0], "exit") == 0) /* Commande "exit" */
+                break;
+
+            if (execute_command(tokens, argv) == -1) /* Commande non trouvée */
+                fprintf(stderr, "%s: 1: %s: not found\n", argv[0], tokens[0]);
         }
 
-        free_tokens(tokens); /* Libérer les tokens */
+        free_tokens(tokens);
     }
 
-    free(command);
+    free(line);
     return (0);
 }

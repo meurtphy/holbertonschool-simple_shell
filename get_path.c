@@ -21,7 +21,7 @@ char *find_in_path(char *command)
         full_path = malloc(strlen(dir) + strlen(command) + 2);
         sprintf(full_path, "%s/%s", dir, command);
 
-        if (stat(full_path, &st) == 0)
+        if (stat(full_path, &st) == 0) /* Fichier trouvé */
         {
             free(path_copy);
             return (full_path);
@@ -30,6 +30,7 @@ char *find_in_path(char *command)
         free(full_path);
         dir = strtok(NULL, ":");
     }
+
     free(path_copy);
     return (NULL);
 }
