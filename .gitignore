@@ -1,0 +1,23 @@
+# Ignorer les fichiers binaires
+simple_shell
+_which
+execve_example
+fork_example
+fork_return_value
+fork_wait_execve
+getppid
+print_args
+read_line
+
+# Ignorer les fichiers C inutiles
+_which.c
+execve_example.c
+fork_example.c
+fork_return_value.c
+fork_wait_execve.c
+getppid.c
+print_args.c
+read_line.c
+
+# Ignorer les scripts inutiles
+pid_max.sh
