@@ -13,6 +13,6 @@
 /* Prototypes */
 void display_prompt(void);
 char *read_command(void);
-int execute_command(char *command);
+int execute_command(char *command, char **argv);
 
 #endif

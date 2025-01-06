@@ -3,39 +3,40 @@
 extern char **environ; /* Déclare environ */
 
 /**
- * execute_command - Exécute une commande en utilisant execve.
- * @command: La commande à exécuter.
+ * execute_command - Exécute une commande.
+ * @command: Commande à exécuter.
+ * @argv: Tableau des arguments.
  *
- * Return: 0 si la commande est exécutée avec succès, -1 sinon.
+ * Return: 0 si la commande a été exécutée, -1 sinon.
  */
-int execute_command(char *command)
+int execute_command(char *command, char **argv)
 {
     pid_t pid;
     int status;
-    char *argv[2];
+    char *cmd[2]; /* Tableau pour la commande */
     struct stat st;
 
-    argv[0] = command;
-    argv[1] = NULL;
+    cmd[0] = command; /* Affecte la commande */
+    cmd[1] = NULL; /* Termine le tableau */
 
     if (stat(command, &st) != 0) /* Vérifie si le fichier existe */
     {
-        fprintf(stderr, "./shell: %s: No such file or directory\n", command);
+        fprintf(stderr, "%s: 1: %s: not found\n", argv[0], command);
         return -1;
     }
 
     pid = fork();
-    if (pid == -1) /* Gestion d'erreur de fork */
+    if (pid == -1) /* Échec de fork */
     {
-        perror("fork");
+        perror(argv[0]);
         return -1;
     }
 
     if (pid == 0) /* Processus enfant */
     {
-        if (execve(command, argv, environ) == -1)
+        if (execve(command, cmd, environ) == -1)
         {
-            perror(command);
+            perror(argv[0]);
             exit(EXIT_FAILURE);
         }
     }

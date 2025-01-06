@@ -1,35 +1,42 @@
 #include "shell.h"
 
 /**
- * main - Boucle principale de l'interpréteur.
+ * main - Boucle principale du shell.
+ * @argc: Nombre d'arguments.
+ * @argv: Tableau des arguments.
  *
- * Return: Always 0.
+ * Return: 0 en cas de succès.
  */
-int main(void)
+int main(int argc, char **argv)
 {
     char *command = NULL;
+    size_t len = 0;
+    ssize_t nread;
+
+    (void)argc; /* Supprime les warnings si argc n'est pas utilisé */
 
     while (1)
     {
         if (isatty(STDIN_FILENO)) /* Mode interactif */
-            display_prompt();
+            printf("$ ");
 
-        command = read_command(); /* Lit l'entrée utilisateur */
-        if (!command) /* Gestion de EOF (Ctrl+D) */
+        nread = getline(&command, &len, stdin); /* Lire la commande */
+        if (nread == -1) /* EOF (Ctrl+D) */
         {
+            free(command);
             if (isatty(STDIN_FILENO))
                 printf("\n");
             break;
         }
 
-        if (strlen(command) > 0) /* Ignore les lignes vides */
-        {
-            if (execute_command(command) == -1)
-                fprintf(stderr, "./simple_shell: %s: No such file or directory\n", command);
-        }
+        command[strcspn(command, "\n")] = '\0'; /* Supprime le \n */
+        if (strlen(command) == 0) /* Commande vide */
+            continue;
 
-        free(command);
+        if (execute_command(command, argv) == -1)
+            fprintf(stderr, "%s: 1: %s: not found\n", argv[0], command);
     }
 
+    free(command);
     return 0;
 }
