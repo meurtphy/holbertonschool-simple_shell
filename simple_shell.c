@@ -7,24 +7,22 @@
  */
 int main(void)
 {
-char *line;
-char **args;
+char *command;
 
 while (1)
 {
-printf("#cisfun$ ");
-line = read_line();
-
-if (!line)
+display_prompt();
+command = read_command();
+if (!command)
 {
 printf("\n");
 break;
 }
 
-args = parse_line(line);
-execute_command(args);
-free_args(args);
+execute_command(command);
+free(command);
 }
 
 return (0);
 }
+

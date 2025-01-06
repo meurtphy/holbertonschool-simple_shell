@@ -8,13 +8,12 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-/* Déclaration de la variable globale environ */
+
 extern char **environ;
 
-/* Prototypes des fonctions */
-char *read_line(void);
-char **parse_line(char *line);
-void execute_command(char **args);
-void free_args(char **args);
 
-#endif /* SHELL_H */
+void display_prompt(void);
+char *read_command(void);
+void execute_command(char *command);
+
+#endif
