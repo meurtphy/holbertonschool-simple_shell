@@ -3,16 +3,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/wait.h>
-#include <errno.h>
+#include <unistd.h>
 
-/* Prototypes */
-void display_prompt(void);
-char *read_command(void);
+
 int execute_command(char *command, char **argv);
+char *find_command_in_path(char *command);
 
 #endif

@@ -1,6 +1,7 @@
 #include "shell.h"
+#include <sys/wait.h> /* Pour waitpid */
 
-extern char **environ; /* Déclare environ */
+extern char **environ; /* Déclaration explicite de environ */
 
 /**
  * execute_command - Exécute une commande.
@@ -13,30 +14,38 @@ int execute_command(char *command, char **argv)
 {
     pid_t pid;
     int status;
-    char *cmd[2]; /* Tableau pour la commande */
+    char *cmd_path;
+    char *cmd[2];
     struct stat st;
 
-    cmd[0] = command; /* Affecte la commande */
-    cmd[1] = NULL; /* Termine le tableau */
+    if (stat(command, &st) == 0) /* Commande avec chemin absolu */
+        cmd_path = strdup(command);
+    else /* Recherche dans le PATH */
+        cmd_path = find_command_in_path(command);
 
-    if (stat(command, &st) != 0) /* Vérifie si le fichier existe */
+    if (!cmd_path) /* Commande introuvable */
     {
         fprintf(stderr, "%s: 1: %s: not found\n", argv[0], command);
         return -1;
     }
 
+    cmd[0] = cmd_path;
+    cmd[1] = NULL;
+
     pid = fork();
-    if (pid == -1) /* Échec de fork */
+    if (pid == -1)
     {
         perror(argv[0]);
+        free(cmd_path);
         return -1;
     }
 
     if (pid == 0) /* Processus enfant */
     {
-        if (execve(command, cmd, environ) == -1)
+        if (execve(cmd_path, cmd, environ) == -1)
         {
             perror(argv[0]);
+            free(cmd_path);
             exit(EXIT_FAILURE);
         }
     }
@@ -45,5 +54,6 @@ int execute_command(char *command, char **argv)
         waitpid(pid, &status, 0); /* Attend que l'enfant termine */
     }
 
+    free(cmd_path);
     return 0;
 }
