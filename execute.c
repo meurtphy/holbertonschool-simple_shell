@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * execute_command - Exécute une commande donnée
+ * execute_command - Exécute une commande externe
  * @tokens: Tableau de tokens
  * @argv: Tableau d'arguments
  *
@@ -13,11 +13,11 @@ int execute_command(char **tokens, char **argv)
     int status;
     char *cmd_path;
 
-    cmd_path = find_in_path(tokens[0]); /* Recherche la commande dans PATH */
+    cmd_path = find_in_path(tokens[0]); /* Recherche la commande */
     if (!cmd_path)
-        return (-1); /* Commande introuvable */
+        return (-1);
 
-    pid = fork(); /* Crée un processus enfant */
+    pid = fork();
     if (pid == -1)
     {
         perror("fork");
@@ -27,7 +27,7 @@ int execute_command(char **tokens, char **argv)
 
     if (pid == 0) /* Processus enfant */
     {
-        execve(cmd_path, tokens, environ); /* Exécute la commande */
+        execve(cmd_path, tokens, environ);
         perror(argv[0]);
         free(cmd_path);
         exit(EXIT_FAILURE);

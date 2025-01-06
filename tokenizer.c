@@ -4,7 +4,7 @@
  * tokenize_command - Découpe une commande en tokens
  * @command: Commande à découper
  *
- * Return: Tableau de tokens ou NULL en cas d'erreur.
+ * Return: Tableau de tokens.
  */
 char **tokenize_command(char *command)
 {
