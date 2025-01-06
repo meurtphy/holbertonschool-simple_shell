@@ -1,59 +1,43 @@
 #include "shell.h"
-#include <sys/wait.h> /* Pour waitpid */
-
-extern char **environ; /* Déclaration explicite de environ */
 
 /**
- * execute_command - Exécute une commande.
- * @command: Commande à exécuter.
- * @argv: Tableau des arguments.
+ * execute_command - Exécute une commande
+ * @command: Commande à exécuter
+ * @argv: Tableau des arguments
  *
- * Return: 0 si la commande a été exécutée, -1 sinon.
+ * Return: 0 en cas de succès, -1 sinon.
  */
 int execute_command(char *command, char **argv)
 {
     pid_t pid;
     int status;
     char *cmd_path;
-    char *cmd[2];
-    struct stat st;
+    char *cmd[] = {NULL, NULL};
 
-    if (stat(command, &st) == 0) /* Commande avec chemin absolu */
-        cmd_path = strdup(command);
-    else /* Recherche dans le PATH */
-        cmd_path = find_command_in_path(command);
+    cmd_path = find_command_in_path(command); /* Recherche dans le PATH */
+    if (!cmd_path)
+        return (-1); /* Commande non trouvée */
 
-    if (!cmd_path) /* Commande introuvable */
-    {
-        fprintf(stderr, "%s: 1: %s: not found\n", argv[0], command);
-        return -1;
-    }
+    cmd[0] = cmd_path; /* Construire l'argument pour execve */
 
-    cmd[0] = cmd_path;
-    cmd[1] = NULL;
-
-    pid = fork();
+    pid = fork(); /* Créer un processus enfant */
     if (pid == -1)
     {
-        perror(argv[0]);
+        perror("fork");
         free(cmd_path);
-        return -1;
+        return (-1);
     }
 
-    if (pid == 0) /* Processus enfant */
+    if (pid == 0) /* Enfant */
     {
-        if (execve(cmd_path, cmd, environ) == -1)
-        {
-            perror(argv[0]);
-            free(cmd_path);
-            exit(EXIT_FAILURE);
-        }
+        execve(cmd_path, cmd, environ); /* Exécuter la commande */
+        perror(argv[0]); /* En cas d'échec */
+        free(cmd_path);
+        exit(EXIT_FAILURE);
     }
-    else /* Processus parent */
-    {
-        waitpid(pid, &status, 0); /* Attend que l'enfant termine */
-    }
+    else /* Parent */
+        waitpid(pid, &status, 0); /* Attendre la fin de l'enfant */
 
     free(cmd_path);
-    return 0;
+    return (0);
 }

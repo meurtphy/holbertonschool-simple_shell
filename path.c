@@ -1,46 +1,45 @@
-#include <stdio.h>  /* Pour sprintf */
-#include <string.h> /* Pour strtok et strlen */
-#include <sys/stat.h> /* Pour stat */
-#include <stdlib.h> /* Pour malloc et free */
+#include "shell.h"
 
 /**
- * find_command_in_path - Recherche le chemin complet d'une commande dans le PATH.
- * @command: La commande à rechercher.
+ * find_command_in_path - Recherche le chemin complet d'une commande
+ * @command: Commande à rechercher
  *
- * Return: Le chemin absolu de la commande, ou NULL si elle n'est pas trouvée.
+ * Return: Le chemin absolu de la commande, ou NULL si non trouvée.
  */
 char *find_command_in_path(char *command)
 {
-    char *path = getenv("PATH"); /* Récupère le PATH */
+    char *path = getenv("PATH");
     char *path_copy, *dir, *full_path;
     struct stat st;
 
-    if (!path) /* Si PATH n'existe pas */
-        return NULL;
+    if (!path)
+        return (NULL);
 
-    path_copy = strdup(path); /* Copie PATH pour strtok */
-    dir = strtok(path_copy, ":"); /* Divise PATH en répertoires */
+    path_copy = strdup(path); /* Copie pour strtok */
+    if (!path_copy)
+        return (NULL);
 
-    while (dir != NULL)
+    dir = strtok(path_copy, ":");
+    while (dir)
     {
-        full_path = malloc(strlen(dir) + strlen(command) + 2); /* Taille = dir + / + command + \0 */
+        full_path = malloc(strlen(dir) + strlen(command) + 2); /* dir + '/' + command */
         if (!full_path)
         {
             free(path_copy);
-            return NULL;
+            return (NULL);
         }
 
-        sprintf(full_path, "%s/%s", dir, command); /* Construit le chemin */
-        if (stat(full_path, &st) == 0) /* Vérifie si le fichier existe */
+        sprintf(full_path, "%s/%s", dir, command);
+        if (stat(full_path, &st) == 0) /* Commande trouvée */
         {
             free(path_copy);
-            return full_path; /* Retourne le chemin complet */
+            return (full_path);
         }
 
-        free(full_path); /* Libère la mémoire pour ce chemin */
-        dir = strtok(NULL, ":"); /* Passe au répertoire suivant */
+        free(full_path); /* Essayer un autre répertoire */
+        dir = strtok(NULL, ":");
     }
 
     free(path_copy);
-    return NULL; /* Commande non trouvée */
+    return (NULL);
 }

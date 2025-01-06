@@ -1,12 +1,19 @@
 #include "shell.h"
 
+/**
+ * main - Point d'entrée du programme
+ * @argc: Nombre d'arguments
+ * @argv: Tableau des arguments
+ *
+ * Return: 0 en cas de succès, 1 sinon.
+ */
 int main(int argc, char **argv)
 {
-    char *command = NULL; /* Pointeur pour la commande */
-    size_t len = 0;       /* Taille du buffer */
+    char *command = NULL;
+    size_t len = 0;
     ssize_t nread;
 
-    (void)argc; /* Supprime les avertissements pour argc inutilisé */
+    (void)argc;
 
     while (1)
     {
@@ -14,21 +21,21 @@ int main(int argc, char **argv)
             printf("$ ");
 
         nread = getline(&command, &len, stdin); /* Lire la commande */
-        if (nread == -1) /* Gestion de EOF (Ctrl+D) */
+        if (nread == -1) /* EOF ou erreur */
         {
             if (isatty(STDIN_FILENO))
                 printf("\n");
-            free(command); /* Libérer la mémoire ici une seule fois */
             break;
         }
 
-        command[strcspn(command, "\n")] = '\0'; /* Supprime le retour à la ligne */
-        if (strlen(command) == 0) /* Commande vide */
-            continue;
-
-        if (execute_command(command, argv) == -1)
-            fprintf(stderr, "%s: 1: %s: not found\n", argv[0], command);
+        command[strcspn(command, "\n")] = '\0'; /* Supprimer '\n' */
+        if (*command) /* Si la commande n'est pas vide */
+        {
+            if (execute_command(command, argv) == -1)
+                fprintf(stderr, "%s: Command not found: %s\n", argv[0], command);
+        }
     }
 
-    return 0;
+    free(command);
+    return (0);
 }
