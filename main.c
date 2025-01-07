@@ -15,21 +15,21 @@ putchar('\n');
 break;
 }
 
+
+if (strlen(command) == 0 || strchr(command, '[') != NULL)
+{
+free(command);
+continue;
+}
+
 fork_wait_exec(command);
 free(command);
 command = NULL;
 }
 
 if (command)
-{
 free(command);
-command = NULL;
-}
 
 return (0);
 }
-
-
-
-
 
