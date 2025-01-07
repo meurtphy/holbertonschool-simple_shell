@@ -15,8 +15,7 @@ putchar('\n');
 break;
 }
 
-
-if (strlen(command) == 0 || strchr(command, '[') != NULL)
+if (strlen(command) == 0)
 {
 free(command);
 continue;
@@ -24,12 +23,7 @@ continue;
 
 fork_wait_exec(command);
 free(command);
-command = NULL;
 }
-
-if (command)
-free(command);
 
 return (0);
 }
-
