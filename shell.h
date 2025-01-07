@@ -3,20 +3,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
+#include <string.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/wait.h>
+#include <errno.h>
 
-extern char **environ;
 
-/* Prototypes */
-int execute_command(char **tokens, char **argv);
-char *find_in_path(const char *command);
-char **tokenize_command(char *command);
-void free_tokens(char **tokens);
-int is_builtin(char **tokens, char **env);
-int _strcmp(char *s1, char *s2);
+void print_prompt(void);
+char *read_command(void);
+void execute_command(char *command);
+void fork_wait_exec(char *command);
 
 #endif
