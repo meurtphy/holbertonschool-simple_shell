@@ -9,10 +9,10 @@
 #include <sys/wait.h>
 #include <errno.h>
 
-
 void print_prompt(void);
 char *read_command(void);
 void execute_command(char *command);
 void fork_wait_exec(char *command);
-extern char **environ;
+void handle_exit(char *command);
+
 #endif

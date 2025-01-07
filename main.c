@@ -27,7 +27,7 @@ if (strlen(command) == 0)
 free(command);
 continue;
 }
-
+handle_exit(command);
 fork_wait_exec(command);
 free(command);
 }
