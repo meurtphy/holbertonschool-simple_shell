@@ -1,9 +1,7 @@
 #include "shell.h"
 
-/**
- * execute_command - Exécute une commande donnée dans le processus courant.
- * @command: La commande à exécuter.
- */
+extern char **environ;
+
 void execute_command(char *command)
 {
 char *argv[2];
@@ -11,10 +9,13 @@ char *argv[2];
 argv[0] = command;
 argv[1] = NULL;
 
-if (execve(argv[0], argv, NULL) == -1)
+if (execve(argv[0], argv, environ) == -1)
 {
-perror(command);
-exit(EXIT_FAILURE);
+perror("./shell");
+_exit(EXIT_FAILURE);
 }
 }
+
+
+
 

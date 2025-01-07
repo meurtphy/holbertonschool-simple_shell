@@ -1,34 +1,26 @@
 #include "shell.h"
 
-/**
- * fork_wait_exec - Crée un processus enfant, exécute et attend.
- * @command: Commande à exécuter.
- */
-
 void fork_wait_exec(char *command)
 {
-pid_t pid = fork();
-
-if (pid == -1)
+int status;
+pid_t child_pid = fork();
+if (child_pid == -1)
 {
 perror("Erreur de fork");
 return;
 }
 
-if (pid == 0)
+if (child_pid == 0)
 {
 execute_command(command);
-exit(0);
+_exit(EXIT_FAILURE);
 }
 else
 {
-int status;
-do
+if (wait(&status) == -1)
 {
-waitpid(pid, &status, WUNTRACED);
+perror("Erreur de wait");
 }
-while (!WIFEXITED(status) && !WIFSIGNALED(status));
+}
+}
 
-
-}
-}
