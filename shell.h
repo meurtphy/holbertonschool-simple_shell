@@ -8,7 +8,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
-#include <limits.h> /* Pour INT_MAX */
 
 extern char **environ;
 
@@ -18,6 +17,5 @@ int handle_exit(char *command);
 char *clean_command(char *command);
 char **split_command(char *command);
 void print_env(void);
-int string_to_int(char *str); /* Déclaration de string_to_int */
 
 #endif
