@@ -27,6 +27,12 @@ continue;
 cleaned_command = clean_command(command);
 if (!cleaned_command)
 continue;
+if (strcmp(cleaned_command, "env") == 0)
+{
+print_env();
+free(cleaned_command);
+continue;
+}
 if (handle_exit(cleaned_command))
 {
 free(cleaned_command);
