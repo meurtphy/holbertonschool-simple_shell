@@ -1,12 +1,11 @@
 #include "shell.h"
 
-#ifndef STDIN_FILENO
-#define STDIN_FILENO 0
-#endif
-
-int main(void)
+int main(int argc, char **argv, char **env)
 {
-char *command = NULL;
+(void)argc;
+(void)argv;
+
+char *command = NULL, *cleaned_command = NULL;
 size_t len = 0;
 int is_interactive = isatty(STDIN_FILENO);
 
@@ -27,10 +26,18 @@ command[strcspn(command, "\n")] = '\0';
 if (strlen(command) == 0)
 continue;
 
-if (handle_exit(command))
-break;
+cleaned_command = clean_command(command);
+if (!cleaned_command)
+continue;
 
-fork_wait_exec(command);
+if (handle_exit(cleaned_command))
+{
+free(cleaned_command);
+break;
+}
+
+fork_wait_exec(cleaned_command, env);
+free(cleaned_command);
 }
 
 free(command);

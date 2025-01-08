@@ -1,15 +1,8 @@
 #include "shell.h"
 
-extern char **environ;
-
-void execute_command(char *command)
+void execute_command(char *resolved_path, char **argv, char **env)
 {
-char *argv[2];
-
-argv[0] = command;
-argv[1] = NULL;
-
-if (execve(argv[0], argv, environ) == -1)
+if (execve(resolved_path, argv, env) == -1)
 perror("execve");
 
 _exit(EXIT_FAILURE);
