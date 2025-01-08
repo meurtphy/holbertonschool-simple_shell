@@ -1,5 +1,9 @@
 #include "shell.h"
 
+#ifndef STDIN_FILENO
+#define STDIN_FILENO 0
+#endif
+
 int main(void)
 {
 char *command = NULL;
