@@ -47,6 +47,7 @@ pid_t pid = fork();
 
 if (pid == -1)
 {
+perror("fork");
 free(resolved_path);
 free(argv);
 return;
@@ -56,6 +57,7 @@ if (pid == 0)
 {
 argv[0] = resolved_path;
 execve(argv[0], argv, env);
+perror("execve");
 free(resolved_path);
 free(argv);
 exit(EXIT_FAILURE);

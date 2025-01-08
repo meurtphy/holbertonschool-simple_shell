@@ -12,12 +12,12 @@ int is_interactive = isatty(STDIN_FILENO);
 while (1)
 {
 if (is_interactive)
-print_prompt();
+write(STDOUT_FILENO, "$ ", 2);
 
 if (getline(&command, &len, stdin) == -1)
 {
 if (is_interactive)
-putchar('\n');
+write(STDOUT_FILENO, "\n", 1);
 break;
 }
 

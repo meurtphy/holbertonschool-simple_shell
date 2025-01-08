@@ -19,12 +19,5 @@ if (j > 0 && cleaned[j - 1] == ' ')
 j--;
 
 cleaned[j] = '\0';
-
-if (strlen(cleaned) == 0 || cleaned[0] == '$')
-{
-free(cleaned);
-return (NULL);
-}
-
 return (cleaned);
 }
