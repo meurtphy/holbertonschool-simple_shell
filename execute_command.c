@@ -8,8 +8,7 @@ argv[0] = command;
 argv[1] = NULL;
 
 if (execve(argv[0], argv, environ) == -1)
-{
 perror("./shell");
 exit(EXIT_FAILURE);
 }
-}
+

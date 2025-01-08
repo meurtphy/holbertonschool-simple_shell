@@ -21,4 +21,3 @@ int status;
 waitpid(pid, &status, 0);
 }
 }
-

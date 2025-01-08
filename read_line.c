@@ -7,6 +7,7 @@ size_t len = 0;
 
 if (getline(&line, &len, stdin) == -1)
 {
+if (line)
 free(line);
 return (NULL);
 }

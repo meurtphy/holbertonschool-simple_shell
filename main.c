@@ -1,9 +1,13 @@
 #include "shell.h"
 
+// Vérifie si STDIN_FILENO est défini, sinon le définit
+#ifndef STDIN_FILENO
+#define STDIN_FILENO 0
+#endif
+
 int main(void)
 {
 char *command = NULL;
-char **args = NULL;
 int is_interactive = isatty(STDIN_FILENO);
 
 while (1)
@@ -19,27 +23,18 @@ putchar('\n');
 break;
 }
 
-args = tokenize_command(command);
-if (args == NULL || args[0] == NULL)
+if (strlen(command) == 0)
 {
 free(command);
-free_args(args);
 continue;
 }
 
-if (strcmp(args[0], "exit") == 0)
-{
-handle_exit(args);
-}
-else
-{
-fork_wait_exec(args[0]);
+handle_exit(command);
+
+fork_wait_exec(command);
+free(command);
 }
 
 free(command);
-free_args(args);
-}
-
 return (0);
 }
-
