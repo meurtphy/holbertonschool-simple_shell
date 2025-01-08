@@ -3,11 +3,17 @@
 char *resolve_path(char *command)
 {
 char *path = getenv("PATH");
-char *path_copy = NULL;
-char *dir = NULL;
-char *full_path = NULL;
+char *path_copy;
+char *dir;
+char *full_path;
 
-if (!path || !command || command[0] == '\0')
+if (!command || command[0] == '\0')
+return (NULL);
+
+if (access(command, X_OK) == 0)
+return (strdup(command));
+
+if (!path)
 return (NULL);
 
 path_copy = strdup(path);
