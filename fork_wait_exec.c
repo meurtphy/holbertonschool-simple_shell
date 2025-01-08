@@ -1,12 +1,6 @@
 #include "shell.h"
 
-void fork_wait_exec(char *input)
-{
-char *command;
-
-
-command = strtok(input, " ");
-while (command != NULL)
+void fork_wait_exec(char *command)
 {
 pid_t pid = fork();
 
@@ -26,9 +20,4 @@ else
 int status;
 waitpid(pid, &status, 0);
 }
-
-
-command = strtok(NULL, " ");
 }
-}
-

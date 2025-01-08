@@ -9,14 +9,11 @@
 #include <sys/wait.h>
 #include <errno.h>
 
-
 void print_prompt(void);
 char *read_command(void);
 void execute_command(char *command);
 void fork_wait_exec(char *command);
 void print_pid(void);
 void print_ppid(void);
-char *trim_spaces(char *str);
-
 
 #endif
