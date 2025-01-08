@@ -7,6 +7,7 @@
 int main(void)
 {
 char *command = NULL;
+size_t len = 0;
 int is_interactive = isatty(STDIN_FILENO);
 
 while (1)
@@ -14,29 +15,24 @@ while (1)
 if (is_interactive)
 print_prompt();
 
-command = read_command();
-if (!command)
+if (getline(&command, &len, stdin) == -1)
 {
 if (is_interactive)
 putchar('\n');
 break;
 }
 
+command[strcspn(command, "\n")] = '\0';
+
 if (strlen(command) == 0)
-{
-free(command);
 continue;
-}
 
 if (handle_exit(command))
-{
-free(command);
 break;
-}
 
 fork_wait_exec(command);
-free(command);
 }
 
+free(command);
 return (0);
 }
