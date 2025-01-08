@@ -12,6 +12,7 @@ int is_interactive = isatty(STDIN_FILENO);
 
 while (1)
 {
+
 if (is_interactive)
 print_prompt();
 
