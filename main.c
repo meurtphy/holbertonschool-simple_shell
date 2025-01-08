@@ -28,6 +28,12 @@ free(command);
 continue;
 }
 
+if (handle_exit(command))
+{
+free(command);
+break;
+}
+
 fork_wait_exec(command);
 free(command);
 }

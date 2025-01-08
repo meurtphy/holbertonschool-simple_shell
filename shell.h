@@ -8,11 +8,13 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <ctype.h>
 
 void print_prompt(void);
 char *read_command(void);
 void execute_command(char *command);
 void fork_wait_exec(char *command);
 char *resolve_path(char *command);
+int handle_exit(char *command);
 
 #endif
