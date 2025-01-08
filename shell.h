@@ -13,6 +13,9 @@ void print_prompt(void);
 char *read_command(void);
 void execute_command(char *command);
 void fork_wait_exec(char *command);
-void handle_exit(char *command);
+void handle_exit(char **args);
+char **tokenize_command(char *command);
+void free_args(char **args);
+int string_to_int(char *str, int *error);
 
 #endif
