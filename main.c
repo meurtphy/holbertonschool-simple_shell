@@ -1,6 +1,6 @@
 #include "shell.h"
 
-// Vérifie si STDIN_FILENO est défini, sinon le définit
+
 #ifndef STDIN_FILENO
 #define STDIN_FILENO 0
 #endif
@@ -29,12 +29,9 @@ free(command);
 continue;
 }
 
-handle_exit(command);
-
 fork_wait_exec(command);
 free(command);
 }
 
-free(command);
 return (0);
 }
