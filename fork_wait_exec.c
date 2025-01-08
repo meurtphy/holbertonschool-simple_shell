@@ -18,7 +18,7 @@ if (!resolved_path)
 fprintf(stderr, "./hsh: 1: %s: not found\n", command);
 return;
 }
-
+printf("Executing: %s\n", resolved_path);
 pid_t pid = fork();
 
 if (pid == -1)
