@@ -1,24 +1,39 @@
 #include "shell.h"
 
+int string_to_int(char *str)
+{
+int i = 0, num = 0, sign = 1;
+if (str[i] == '-')
+{
+sign = -1;
+i++;
+}
+while (str[i])
+{
+if (str[i] < '0' || str[i] > '9')
+return (-1);
+num = num * 10 + (str[i] - '0');
+i++;
+}
+return (num *sign);
+}
+
 int handle_exit(char *command)
 {
-if (strcmp(command, "exit") == 0)
-exit(0);
-
-if (strncmp(command, "exit ", 5) == 0)
+if (strncmp(command, "exit", 4) == 0 && (command[4] == '\0' || command[4] == ' '))
+{
+if (command[4] != '\0')
 {
 char *arg = command + 5;
-char *endptr;
-long status = strtol(arg, &endptr, 10);
-
-if (*endptr != '\0' || status < 0)
+int status = string_to_int(arg);
+if (status == -1)
 {
-fprintf(stderr, "./hsh: exit: Illegal number: %s\n", arg);
+fprintf(stderr, "Invalid exit status: %s\n", arg);
 return (0);
 }
-
-exit((int)status);
+exit(status);
 }
-
+exit(0);
+}
 return (0);
 }
