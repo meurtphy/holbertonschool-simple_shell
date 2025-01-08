@@ -1,18 +1,16 @@
 #include "shell.h"
+
 void fork_wait_exec(char *command, char **env, char *prog_name)
 {
-char **argv;
-char *resolved_path;
-pid_t pid; /* Déclarez ici, avant tout autre code */
+char **argv = split_command(command);
+char *resolved_path = NULL;
+pid_t pid;
 
-argv = split_command(command);
-if (!argv || !argv[0])
-{
-free(argv);
-return;
-}
-
+if (access(argv[0], X_OK) == 0)
+resolved_path = strdup(argv[0]);
+else
 resolved_path = resolve_path(argv[0]);
+
 if (!resolved_path)
 {
 fprintf(stderr, "%s: 1: %s: not found\n", prog_name, argv[0]);
@@ -20,7 +18,8 @@ free(argv);
 return;
 }
 
-pid = fork(); /* Déplacez l'appel après les déclarations */
+pid = fork();  /* Déplacement de la déclaration ici */
+
 if (pid == -1)
 {
 perror("fork");
@@ -31,11 +30,12 @@ return;
 
 if (pid == 0)
 {
-execve(resolved_path, argv, env);
+argv[0] = resolved_path;
+execve(argv[0], argv, env);
 perror("execve");
 free(resolved_path);
 free(argv);
-_exit(EXIT_FAILURE);
+exit(EXIT_FAILURE);
 }
 else
 {
