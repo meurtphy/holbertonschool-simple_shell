@@ -1,0 +1,93 @@
+Simple Shell Project
+Description
+Our project consists of developing a simplified version of a shell in C language. The main goal is to understand the fundamentals of how a shell works, including:
+Process management (creating child processes, communication between parent and child processes).
+Execution of user-input commands.
+Manipulation of system environment variables.
+Interpretation and processing of user inputs.
+The project implements fundamental system calls such as fork(), execve(), and wait() to provide a functional experience similar to a basic Unix terminal.
+Features
+Creation of child processes to execute user commands.
+Custom exit command to quit the shell.
+Display of environment variables using the env command.
+Automatic resolution of paths for system executables.
+Cleaning and splitting commands before execution.
+Project Structure
+shell.h
+The shell.h file groups the declarations of essential functions and includes the standard libraries required for the project.
+#ifndef SHELL_H
+#define SHELL_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <errno.h>
+
+extern char **environ;
+
+void fork_wait_exec(char *command, char **env, char *prog_name);
+char *resolve_path(char *command);
+int handle_exit(char *command);
+char *clean_command(char *command);
+char **split_command(char *command);
+void print_env(void);
+
+#endif
+Description of Key Functions
+void fork_wait_exec(char *command, char **env, char *prog_name);
+Role: Executes a command by creating a new child process.
+Details:
+The parent calls fork() to create a child process.
+The child process uses execve() to replace its image with that of the requested command.
+The parent process calls wait() to wait for the child process to finish execution.
+In case of an error (e.g., command not found), appropriate messages are displayed.
+char *resolve_path(char *command);
+Role: Resolves the absolute path of a command.
+Details: Iterates through the directories defined in the PATH environment variable to locate the executable corresponding to the given command.
+int handle_exit(char *command);
+Role: Identifies if the command is "exit" to terminate the shell.
+Details: If the command is "exit", the function returns a value indicating that the program should terminate.
+char *clean_command(char *command);
+Role: Cleans the user input.
+Details: Removes unnecessary spaces and undesirable characters to avoid errors in command processing.
+char **split_command(char *command);
+Role: Splits a command into individual arguments.
+Details: Converts the input string into an array of strings, where each string represents a distinct argument (e.g., ls -l becomes {"ls", "-l", NULL}).
+void print_env(void);
+Role: Displays all available environment variables.
+Details: Iterates through the global environ array and prints each variable as a string.
+Compilation
+To compile the project, use the following command:
+gcc -Wall -Werror -Wextra -pedantic *.c -o simple_shell
+Usage
+Run the compiled program:
+./simple_shell
+Enter a command to execute, such as ls or pwd.
+Use exit to quit the shell.
+Example
+$ ./simple_shell
+$ ls -l
+<file listing>
+$ env
+<environment variables listing>
+$ exit
+Dependencies
+GCC: To compile the source code.
+Linux or POSIX: An environment compatible with the system calls used.
+Challenges Faced
+Error Handling:
+Identifying cases where fork() or execve() fail.
+Providing clear messages to help the user understand encountered issues (e.g., command not found).
+Modular Structure:
+Dividing the code into specific functions to simplify readability and maintenance.
+Ensuring a clear separation between business logic (parsing, command handling) and system calls.
+Handling Complex Commands:
+Ensuring compatibility with commands taking multiple arguments while maintaining robust parsing.
+Authors
+Erwan Pasqier and Matteo Foti
+This project was completed as a team of two. We collaborated on every stage of development, from design to implementation and testing. Each of us contributed ideas and expertise to make this project functional and robust.
+License
+This project is distributed under the MIT License. Refer to the LICENSE file for more details.
