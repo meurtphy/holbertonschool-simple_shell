@@ -1,93 +1,105 @@
-Simple Shell Project
-Description
-Our project consists of developing a simplified version of a shell in C language. The main goal is to understand the fundamentals of how a shell works, including:
-Process management (creating child processes, communication between parent and child processes).
-Execution of user-input commands.
-Manipulation of system environment variables.
-Interpretation and processing of user inputs.
-The project implements fundamental system calls such as fork(), execve(), and wait() to provide a functional experience similar to a basic Unix terminal.
-Features
-Creation of child processes to execute user commands.
-Custom exit command to quit the shell.
-Display of environment variables using the env command.
-Automatic resolution of paths for system executables.
-Cleaning and splitting commands before execution.
-Project Structure
-shell.h
-The shell.h file groups the declarations of essential functions and includes the standard libraries required for the project.
-#ifndef SHELL_H
-#define SHELL_H
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <errno.h>
-
-extern char **environ;
-
-void fork_wait_exec(char *command, char **env, char *prog_name);
-char *resolve_path(char *command);
-int handle_exit(char *command);
-char *clean_command(char *command);
-char **split_command(char *command);
-void print_env(void);
-
-#endif
-Description of Key Functions
-void fork_wait_exec(char *command, char **env, char *prog_name);
-Role: Executes a command by creating a new child process.
-Details:
-The parent calls fork() to create a child process.
-The child process uses execve() to replace its image with that of the requested command.
-The parent process calls wait() to wait for the child process to finish execution.
-In case of an error (e.g., command not found), appropriate messages are displayed.
-char *resolve_path(char *command);
-Role: Resolves the absolute path of a command.
-Details: Iterates through the directories defined in the PATH environment variable to locate the executable corresponding to the given command.
-int handle_exit(char *command);
-Role: Identifies if the command is "exit" to terminate the shell.
-Details: If the command is "exit", the function returns a value indicating that the program should terminate.
-char *clean_command(char *command);
-Role: Cleans the user input.
-Details: Removes unnecessary spaces and undesirable characters to avoid errors in command processing.
-char **split_command(char *command);
-Role: Splits a command into individual arguments.
-Details: Converts the input string into an array of strings, where each string represents a distinct argument (e.g., ls -l becomes {"ls", "-l", NULL}).
-void print_env(void);
-Role: Displays all available environment variables.
-Details: Iterates through the global environ array and prints each variable as a string.
-Compilation
-To compile the project, use the following command:
+.TH SIMPLE_SHELL 1 "January 2025" "Version 1.0" "User Commands"
+.SH NAME
+simple_shell \- A simplified Unix shell implementation in C.
+.SH SYNOPSIS
+.B simple_shell
+.RI [ command ]
+.SH DESCRIPTION
+.B simple_shell
+is a basic shell implemented in C that supports command execution, environment variable handling, and input processing. It provides functionalities similar to a minimal Unix terminal.
+.SH FEATURES
+- Execution of user-input commands via child processes.
+- Support for custom commands like
+.B exit
+to quit the shell.
+- Display of environment variables using the
+.B env
+command.
+- Path resolution for system executables.
+- Input cleaning and argument splitting for better command handling.
+.SH IMPLEMENTATION DETAILS
+The following key system calls and functions are used in the implementation:
+.TP
+.B fork()
+Creates a child process to execute user commands.
+.TP
+.B execve()
+Executes the specified command in the child process.
+.TP
+.B wait()
+Allows the parent process to wait for the child process to complete.
+.TP
+.B environ
+A global array for accessing environment variables.
+.SH FILES
+.B shell.h
+Header file containing function declarations and required libraries.
+.SH FUNCTIONS
+The shell implements the following main functions:
+.TP
+.B void fork_wait_exec(char *command, char **env, char *prog_name)
+Executes a command by creating a child process, replacing its image with
+.B execve()
+, and waiting for completion.
+.TP
+.B char *resolve_path(char *command)
+Finds the absolute path of a command by iterating through the
+.B PATH
+environment variable.
+.TP
+.B int handle_exit(char *command)
+Checks if the user entered the
+.B exit
+command to terminate the shell.
+.TP
+.B char *clean_command(char *command)
+Removes unnecessary spaces and characters from the input.
+.TP
+.B char **split_command(char *command)
+Splits the input command into an array of arguments for execution.
+.TP
+.B void print_env(void)
+Displays all environment variables by iterating through the
+.B environ
+array.
+.SH COMPILATION
+To compile the source code, use:
+.EX
 gcc -Wall -Werror -Wextra -pedantic *.c -o simple_shell
-Usage
-Run the compiled program:
+.EE
+.SH USAGE
+Run the program:
+.EX
 ./simple_shell
-Enter a command to execute, such as ls or pwd.
-Use exit to quit the shell.
-Example
+.EE
+Enter commands like
+.B ls
+or
+.B pwd
+. Use
+.B exit
+to quit the shell.
+.SH EXAMPLES
+Run the shell:
+.EX
 $ ./simple_shell
 $ ls -l
 <file listing>
 $ env
-<environment variables listing>
+<environment variables>
 $ exit
-Dependencies
-GCC: To compile the source code.
-Linux or POSIX: An environment compatible with the system calls used.
-Challenges Faced
-Error Handling:
-Identifying cases where fork() or execve() fail.
-Providing clear messages to help the user understand encountered issues (e.g., command not found).
-Modular Structure:
-Dividing the code into specific functions to simplify readability and maintenance.
-Ensuring a clear separation between business logic (parsing, command handling) and system calls.
-Handling Complex Commands:
-Ensuring compatibility with commands taking multiple arguments while maintaining robust parsing.
-Authors
-Erwan Pasqier and Matteo Foti
-This project was completed as a team of two. We collaborated on every stage of development, from design to implementation and testing. Each of us contributed ideas and expertise to make this project functional and robust.
-License
+.EE
+.SH DEPENDENCIES
+- GCC: A C compiler for building the project.
+- Linux or POSIX-compatible system: Required for system calls like
+.B fork()
+and
+.B execve()
+.
+.SH AUTHORS
+Erwan Pasqier and Matteo Foti.
+.SH LICENSE
 This project is distributed under the MIT License. Refer to the LICENSE file for more details.
+.SH SEE ALSO
+.B bash(1),
+.B sh(1)
